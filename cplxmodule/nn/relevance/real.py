@@ -256,6 +256,76 @@ class Conv3dVD(torch.nn.Conv3d, _BaseRelevanceReal):
         return mu + torch.randn_like(s2) * torch.sqrt(torch.clamp(s2, 1e-8))
 
 
+class ConvTranspose1dVD(torch.nn.ConvTranspose1d, _BaseRelevanceReal):
+    r"""1D transposed convolution layer with variational dropout.
+
+    Details
+    -------
+    See `torch.nn.ConvTranspose1d` for reference on the dimensions and parameters.
+    """
+
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
+                 padding=0, output_padding=0, groups=1, bias=True, dilation=1,
+                 padding_mode='zeros'):
+        super().__init__(in_channels, out_channels, kernel_size, stride=stride,
+                         padding=padding, output_padding=output_padding, groups=groups,
+                         bias=bias, dilation=dilation, padding_mode=padding_mode)
+
+        if self.padding_mode != "zeros":
+            raise ValueError(f"Only `zeros` padding mode is supported. "
+                             f"Got `{self.padding_mode}`.")
+
+        self.log_sigma2 = torch.nn.Parameter(torch.Tensor(*self.weight.shape))
+        self.reset_variational_parameters()
+
+    def forward(self, input, output_size=None):
+        mu = super().forward(input, output_size=output_size)
+        if not self.training:
+            return mu
+
+        output_padding = self._output_padding(input, output_size, self.stride,
+                                              self.padding, self.kernel_size)
+        s2 = F.conv_transpose1d(input * input, torch.exp(self.log_sigma2), None,
+                                self.stride, self.padding, output_padding,
+                                self.groups, self.dilation)
+        return mu + torch.randn_like(s2) * torch.sqrt(torch.clamp(s2, 1e-8))
+
+
+class ConvTranspose2dVD(torch.nn.ConvTranspose2d, _BaseRelevanceReal):
+    r"""2D transposed convolution layer with variational dropout.
+
+    Details
+    -------
+    See `torch.nn.ConvTranspose2d` for reference on the dimensions and parameters.
+    """
+
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
+                 padding=0, output_padding=0, groups=1, bias=True,
+                 padding_mode='zeros', dilation=1):
+        super().__init__(in_channels, out_channels, kernel_size, stride=stride,
+                         padding=padding, output_padding=output_padding, groups=groups,
+                         bias=bias, padding_mode=padding_mode, dilation=dilation)
+
+        if self.padding_mode != "zeros":
+            raise ValueError(f"Only `zeros` padding mode is supported. "
+                             f"Got `{self.padding_mode}`.")
+
+        self.log_sigma2 = torch.nn.Parameter(torch.Tensor(*self.weight.shape))
+        self.reset_variational_parameters()
+
+    def forward(self, input, output_size=None):
+        mu = super().forward(input, output_size=output_size)
+        if not self.training:
+            return mu
+
+        output_padding = self._output_padding(input, output_size, self.stride,
+                                              self.padding, self.kernel_size)
+        s2 = F.conv_transpose2d(input * input, torch.exp(self.log_sigma2), None,
+                                self.stride, self.padding, output_padding,
+                                self.groups, self.dilation)
+        return mu + torch.randn_like(s2) * torch.sqrt(torch.clamp(s2, 1e-8))
+
+
 class BilinearVD(torch.nn.Bilinear, _BaseRelevanceReal):
     """Bilinear layer with variational dropout.
 
