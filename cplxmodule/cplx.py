@@ -735,9 +735,9 @@ def conv_transpose1d(input, weight, bias=None, stride=1,
     r"""Applies a complex 1d transposed convolution to the
     incoming complex tensor. See torch.nn.ConvTranspose1d
     for documentation."""
-    return conv_transposend(F.conv_transpose1d, weight, bias,
-                             stride, padding, output_padding,
-                             groups, dilation, padding_mode)
+    return conv_transposend(F.conv_transpose1d, input, weight,
+                            bias, stride, padding, output_padding,
+                            groups, dilation, padding_mode)
 
 
 def conv_transpose2d(input, weight, bias=None, stride=1,
@@ -746,9 +746,9 @@ def conv_transpose2d(input, weight, bias=None, stride=1,
     r"""Applies a complex 2d transposed convolution to the
     incoming complex tensor. See torch.nn.ConvTranspose2d
     for documentation."""
-    return conv_transposend(F.conv_transpose2d, weight, bias,
-                             stride, padding, output_padding,
-                             groups, dilation, padding_mode)
+    return conv_transposend(F.conv_transpose2d, input, weight,
+                            bias, stride, padding, output_padding,
+                            groups, dilation, padding_mode)
 
 
 def conv_transpose3d(input, weight, bias=None, stride=1,
@@ -757,9 +757,9 @@ def conv_transpose3d(input, weight, bias=None, stride=1,
     r"""Applies a complex 3d transposed convolution to the
     incoming complex tensor. See torch.nn.ConvTranspose3d
     for documentation."""
-    return conv_transposend(F.conv_transpose3d, weight, bias,
-                             stride, padding, output_padding,
-                             groups, dilation, padding_mode)
+    return conv_transposend(F.conv_transpose3d, input, weight,
+                            bias, stride, padding, output_padding,
+                            groups, dilation, padding_mode)
 
 
 def einsum(equation, *tensors):
