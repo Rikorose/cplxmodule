@@ -230,11 +230,21 @@ class Cplx(object):
 
     def squeeze(self, dim=None):
         r"""Returns the complex tensor with all the dimensions of input of size 1 removed."""
-        return type(self)(self.__real.squeeze(dim=dim), self.__imag.squeeze(dim=dim))
+        if dim is None:
+            return type(self)(self.__real.squeeze(), self.__imag.squeeze())
+        else:
+            return type(self)(
+                self.__real.squeeze(dim=dim), self.__imag.squeeze(dim=dim)
+            )
 
     def unsqueeze(self, dim=None):
         r"""Returns a new complex tensor with a dimension of size one inserted at the specified position."""
-        return type(self)(self.__real.unsqueeze(dim=dim), self.__imag.unsqueeze(dim=dim))
+        if dim is None:
+            return type(self)(self.__real.unsqueeze(), self.__imag.unsqueeze())
+        else:
+            return type(self)(
+                self.__real.unsqueeze(dim=dim), self.__imag.unsqueeze(dim=dim)
+            )
 
     def item(self):
         r"""The scalar value of zero-dim complex tensor."""
