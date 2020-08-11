@@ -230,8 +230,12 @@ class Cplx(object):
 
     def squeeze(self, dim=None, out=None):
         r"""Returns the complex tensor with all the dimensions of input of size 1 removed."""
+        if out is not None:
+            out_re, out_im = out.real, out.imag
+        else:
+            out_re, out_im = None, None
         return type(self)(
-            self.__real.squeeze(dim, out.real), self.__imag.squeeze(dim, out.imag)
+            self.__real.squeeze(dim, out_re), self.__imag.squeeze(dim, out_im)
         )
 
     def unsqueeze(self, dim=None):
